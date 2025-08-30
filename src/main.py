@@ -1,10 +1,5 @@
 import os
-
-def run_model():
-    # process input -> generate response
-    # -> process output -> update memory
-    
-    pass
+from run_model import run_model
 
 if __name__ == "__main__":
     # check for internet

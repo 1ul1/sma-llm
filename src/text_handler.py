@@ -8,7 +8,7 @@ class TextHandler:
         pass
 
     @staticmethod
-    def post_process_text(string):
+    def post_process_text(string: str) -> str:
         if not string:
             return ""
         pattern = r"[^a-zA-Z0-9.,?!=+ -]"
@@ -19,7 +19,7 @@ class TextHandler:
         return string
     
     @staticmethod
-    def pre_process_text(string):
+    def pre_process_text(string: str) -> str:
         if not string:
             return ""
         string = TextHandler.post_process_text(string)
@@ -30,14 +30,14 @@ class TextHandler:
         return string
     
     @staticmethod
-    def test_process_text(string):
+    def test_process_text(string: str) -> str:
         print("Pre: " + TextHandler.pre_process_text(string)\
               + "\nPost: " + TextHandler.post_process_text(string))
     
     sentence_counter = 0
     punctuation_characters = [".", ",", "!"]
     @staticmethod
-    def stop(string):
+    def stop(string: str):
         match string:
             case _ if not string:
                 return True
