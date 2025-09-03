@@ -17,4 +17,7 @@ class Memory:
         else:
             self.conversation = self.conversation + "\nAssistant: " + string
         self.turn = not self.turn
+
+    def get_history(self) -> str:
+        pass
     
