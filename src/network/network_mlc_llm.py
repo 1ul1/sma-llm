@@ -22,32 +22,14 @@ class MLCLLM(Network):
             self.engine = None
     
     def generate(self, memory: str) -> str:
-        for completion in engine.chat.completions.create(
+        answer = ""
+        for completion in self.engine.chat.completions.create(
             messages = memory,
             model = self.model,
             stream = True
         ):
-            pass
-        pass
-
-
-
-
-# https://llm.mlc.ai/docs/deploy/python_engine.html
-# from mlc_llm import MLCEngine
-
-# # Create engine
-# model = "HF://mlc-ai/Llama-3-8B-Instruct-q4f16_1-MLC"
-# engine = MLCEngine(model)
-
-# # Run chat completion in OpenAI API.
-# for response in engine.chat.completions.create(
-#     messages=[{"role": "user", "content": "What is the meaning of life?"}],
-#     model=model,
-#     stream=True,
-# ):
-#     for choice in response.choices:
-#         print(choice.delta.content, end="", flush=True)
-# print("\n")
-
-# engine.terminate()
+            for choices in response.choices: #type: ignore
+                print(choice.delta.content, end="", flush=True) #type: ignore
+                answer += choice.delta.content #type: ignore
+        print("\n")
+        return answer
