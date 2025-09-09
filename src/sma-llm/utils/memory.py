@@ -18,7 +18,7 @@ class Memory:
     def __init__(self, engine: str) -> None:
         self.context = self.Message("system", "You are a helpful assistant.\nConversation so far:\n")
         self.engine = engine
-        self.memory = []
+        self.memory = [] # :list["Message"]
         # to know who's turn it is
         self.turn = "user"
     
@@ -48,6 +48,7 @@ class Memory:
 
     def get_memory_as_string(self) -> str:
         return (
+            
             self.context.get_message_as_str
             + "\n".join(message.get_message_as_str for message in self.memory)
         )
