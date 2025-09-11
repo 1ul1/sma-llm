@@ -1,8 +1,8 @@
 from transformers import AutoModelForCausalLM as LLM, AutoTokenizer as Tokenizer # type: ignore
 import torch #type: ignore
 import os
-from network_interface import Network
-from text_handler import TextHandler
+from .network_interface import Network
+from sma_llm.utils.text_handler import TextHandler
 
 #huggingface/tokenizers: The current process just got forked, after parallelism has already been used.
 #Disabling parallelism to avoid deadlocks...

@@ -1,5 +1,5 @@
 from mlc_llm import MLCEngine # type: ignore
-from network_interface import Network
+from .network_interface import Network
 
 class MLCLLM(Network):
     model = None # the model itself
