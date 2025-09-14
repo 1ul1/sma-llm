@@ -1,4 +1,4 @@
-from .display import Display
-from .write_output import WriteOutput
+from .print_output import PrintOutput
+from .write_output import WriteOutput, SHOW
 
-__all__ = ["Display", "WriteOutput"]
+__all__ = ["PrintOutput", "WriteOutput", "SHOW"]

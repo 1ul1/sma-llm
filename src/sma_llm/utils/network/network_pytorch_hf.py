@@ -3,6 +3,8 @@ import torch #type: ignore
 import os
 from .network_interface import Network
 from sma_llm.utils.text_handler import TextHandler
+# from .read_model_config import model_config
+from sma_llm.utils.io_pipeline import SHOW
 
 #huggingface/tokenizers: The current process just got forked, after parallelism has already been used.
 #Disabling parallelism to avoid deadlocks...
@@ -12,7 +14,7 @@ from sma_llm.utils.text_handler import TextHandler
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def downloadModel():
-    model_id = "mistralai/Mistral-7B-v0.1"
+    model_id = "NousResearch/Hermes-3-Llama-3.2-3B"
     tokenizer = Tokenizer.from_pretrained(model_id)
     model = LLM.from_pretrained(model_id)
     tokenizer.save_pretrained("../model/tokenizer")
@@ -27,6 +29,8 @@ class PyTorchTransformers(Network):
     max_position_embeddings = None
     mps_device = None
     instance = None
+    config = None
+    text_handler = None
 
     # singletone, the instance exists only when model uploaded on RAM
     def __new__(cls):
@@ -36,18 +40,22 @@ class PyTorchTransformers(Network):
         return cls.instance
 
     def __init(self):
-        pass
+        if text_handler is None:
+            text_handler = TextHandler()
 
     @classmethod
     def upload_model(cls) -> None:
-        cls.model =  LLM.from_pretrained("../model")
-        cls.tokenizer = Tokenizer.from_pretrained("../model/tokenizer")
-        cls.eos_token_id = cls.tokenizer.eos_token_id
+        cls.model =  LLM.from_pretrained("./sma_llm/models/hf_pytorch/model")
+        cls.tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
+        cls.max_position_embeddings = cls.model.config.max_position_embeddings
+        cls.eos_token_id = cls.model.config.eos_token_id
+
         # Metal accelerated # https://developer.apple.com/metal/pytorch/
         if torch.backends.mps.is_available():
             cls.mps_device = torch.device("mps")
         else:
             cls.mps_device = torch.device("cpu") # already on cpu but doesn't break
+            
         # "For models, .to(device) does modify in-place, so reassignment is optional"
         cls.model = cls.model.to(cls.mps_device)
         cls.model.eval()
@@ -86,20 +94,22 @@ class PyTorchTransformers(Network):
                 )
                 live_answer = self.tokenizer.decode(output_ids[0][input_ids.size(1):], skip_special_tokens=True)
                 live_answer = TextHandler.post_process_text(live_answer) #type: ignore
-                write_output.main(live_answer) #type: ignore
+                SHOW.display_output(live_answer) #type: ignore
                 
                 # STOP
                 if (self.eos_token_id in (output_ids[0][input_ids.size(1):].tolist()) 
-                    or TextHandler.stop(live_answer)):
+                    or self.text_handler.stop(live_answer)):
 
-                    TextHandler.sentence_counter = 0
-                    # if (input_ids.size(1) >= 1500): 
-                    #     lines = conversation.split("User:")
-                    #     conversation = initialPrompt + lines[-1]
+                    self.text_handler.sentence_counter = 0
+                    SHOW.display_output("\n")
                     break
             #
-        return answer
+        return TextHandler.post_process_text(answer)
 
     @property
     def max_position_embeddings(self) -> int:
-        pass
+        return self.max_position_embeddings
+
+    @property
+    def eos_token_id(self) -> int:
+        return self.eos_token_id

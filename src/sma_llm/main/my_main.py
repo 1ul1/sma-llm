@@ -1,5 +1,5 @@
 import os
-from run_model import run_model
+from .chat import run
 
 if __name__ == "__main__":
     # check for internet
@@ -7,4 +7,4 @@ if __name__ == "__main__":
         print("No Internet access  ✔ ✔ ✔")
     else:
         print("Internet access ✘ ✘ ✘")
-    run_model()
+    run()

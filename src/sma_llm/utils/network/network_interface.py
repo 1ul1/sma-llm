@@ -13,3 +13,8 @@ class Network(ABC):
     @abstractmethod
     def max_position_embeddings(self) -> int:
         pass
+
+    @property
+    @abstractmethod
+    def eos_token_id(self) -> int:
+        pass

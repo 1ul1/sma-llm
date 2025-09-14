@@ -1,3 +1,5 @@
+from sma_llm.utils.network import *
+
 class Memory:
     # General message structure, same as dict, but easier to scale
     class Message:
@@ -15,9 +17,8 @@ class Memory:
     # to keep it static while summarizing the conversation in case of reaching token limit
     # (max_position_embeddings = 2048)... depending on model
 
-    def __init__(self, engine: str) -> None:
+    def __init__(self) -> None:
         self.context = self.Message("system", "You are a helpful assistant.\nConversation so far:\n")
-        self.engine = engine
         self.memory = [] # :list["Message"]
         # to know who's turn it is
         self.turn = "user"
@@ -32,18 +33,20 @@ class Memory:
         self.turn = "assistant" if self.turn == "user" else "user"
         #update the memory itself
         self.memory.append(message)
-        
-    def get_memory(self) -> list[dict[str, str]] | str :
-        match self.engine:
-            case "mlc-llm":
+    
+    def get_memory(self, obj: Network) -> list[dict[str, str]] | str | None:
+        match obj:
+            case MLCLLM():
                 return self.get_memory_as_dict()
-            case "hf-torch":
+            case PyTorchTransformers():
                 return self.get_memory_as_string()
+            case _:
+                print(self.get_memory_as_string(), end="", flush=True)
 
     def get_memory_as_dict(self) -> list[dict[str, str]]:
         return (
             [self.context.get_message_as_dict]
-            + list(message.get_message_as_dict for message in self.memory)
+            + [message.get_message_as_dict for message in self.memory]
         )
 
     def get_memory_as_string(self) -> str:

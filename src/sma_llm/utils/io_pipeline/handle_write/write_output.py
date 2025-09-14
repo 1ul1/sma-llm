@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
+from .print_output import PrintOutput
 
 class WriteOutput(ABC):
     @staticmethod
     @abstractmethod
-    def process_output(string: str) -> None:
+    def display_output(string: str) -> None:
         return
+    
+SHOW = PrintOutput()

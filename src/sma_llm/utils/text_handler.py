@@ -1,12 +1,6 @@
 import re
 
 class TextHandler:
-    def __new__(cls):
-        raise TypeError("")
-    
-    def __init__(self):
-        pass
-
     @staticmethod
     def post_process_text(string: str) -> str:
         if not string:
@@ -34,21 +28,28 @@ class TextHandler:
         print("Pre: " + TextHandler.pre_process_text(string)\
               + "\nPost: " + TextHandler.post_process_text(string))
     
-    sentence_counter = 0
     punctuation_characters = [".", ",", "!"]
-    @staticmethod
-    def stop(string: str):
+    max_sentence_number = 5
+
+    def __init__(self):
+        self.sentence_counter = 0
+        
+    def stop(self, string: str):
         match string:
             case _ if not string:
                 return True
             case _ if "?" in string:
-                TextHandler.sentence_counter = 0
+                self.sentence_counter = 0
                 return True
             case _ if any(character in string for character in TextHandler.punctuation_characters):
-                TextHandler.sentence_counter += 1
-                if TextHandler.sentence_counter == 4:
-                    TextHandler.sentence_counter = 0
+                self.sentence_counter += 1
+                if self.sentence_counter == TextHandler.max_sentence_number:
+                    self.sentence_counter = 0
                     return True
                 return False
             case _:
                 return False
+            
+    @staticmethod
+    def set_max_sentence_number(var: int) -> None:
+        TextHandler.max_sentence_number = var
