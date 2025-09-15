@@ -11,10 +11,10 @@ class Network(ABC):
 
     @property
     @abstractmethod
-    def max_position_embeddings(self) -> int:
+    def get_max_position_embeddings(self) -> int:
         pass
 
     @property
     @abstractmethod
-    def eos_token_id(self) -> int:
+    def get_eos_token_id(self) -> int:
         pass

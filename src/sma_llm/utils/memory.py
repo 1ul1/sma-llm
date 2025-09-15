@@ -5,9 +5,11 @@ class Memory:
             self.role = role # system - context | user | assistant OpenAI API
             self.content = content
         
+        @property
         def get_message_as_dict(self) -> dict[str, str]:
             return {"role": self.role, "content": self.content}
-
+        
+        @property
         def get_message_as_str(self) -> str:
             return f"{self.role}: {self.content}"
         

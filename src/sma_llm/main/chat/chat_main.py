@@ -1,8 +1,8 @@
 from .conversation import Conversation
-from sma_llm.utils import Network, MLCLLM, PyTorchTransformers # the engines
+from sma_llm.utils import MLCLLM, PyTorchTransformers # the engines
 
 def run():
-    chat = Conversation(PyTorchTransformers())
+    chat = Conversation(MLCLLM())
     chat.converse()
 
 if __name__ == "__main__":

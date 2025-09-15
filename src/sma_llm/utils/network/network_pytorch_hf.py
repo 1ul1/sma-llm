@@ -46,8 +46,13 @@ class PyTorchTransformers(Network):
 
     @classmethod
     def upload_model(cls) -> None:
-        cls.model =  LLM.from_pretrained("./sma_llm/models/hf_pytorch/model")
-        cls.tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
+        try:
+            cls.model =  LLM.from_pretrained("./sma_llm/models/hf_pytorch/model")
+            cls.tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
+        except Exception as e:
+            print(f"{e}")
+            return
+
         cls.max_position_embeddings = cls.model.config.max_position_embeddings
         cls.eos_token_id = cls.model.config.eos_token_id
 
@@ -114,9 +119,9 @@ class PyTorchTransformers(Network):
         return answer
 
     @property
-    def max_position_embeddings(self) -> int:
+    def get_max_position_embeddings(self) -> int:
         return self.max_position_embeddings
 
     @property
-    def eos_token_id(self) -> int:
+    def get_eos_token_id(self) -> int:
         return self.eos_token_id

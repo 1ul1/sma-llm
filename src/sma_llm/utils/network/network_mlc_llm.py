@@ -18,7 +18,12 @@ class MLCLLM(Network):
     def __new__(cls):
         if cls.instance is None:
             cls.model =  "./sma_llm/models/mlc_llm/model"
-            cls.engine = MLCEngine(cls.model)
+            try:
+                cls.engine = MLCEngine(cls.model)
+            except Exception as e:
+                print(f"{e}")
+                return
+
             cls.instance = super(MLCLLM, cls).__new__(cls)
         return cls.instance
     
@@ -68,9 +73,9 @@ class MLCLLM(Network):
         return answer
     
     @property
-    def max_position_embeddings(self) -> int:
+    def get_max_position_embeddings(self) -> int:
         self.max_position_embeddings
 
     @property
-    def eos_token_id(self) -> int:
+    def get_eos_token_id(self) -> int:
         self.eos_token_id
