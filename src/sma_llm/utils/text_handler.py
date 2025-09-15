@@ -1,4 +1,5 @@
 import re
+from textblob import TextBlob #type: ignore
 
 class TextHandler:
     @staticmethod
@@ -27,6 +28,11 @@ class TextHandler:
     def test_process_text(string: str) -> str:
         print("Pre: " + TextHandler.pre_process_text(string)\
               + "\nPost: " + TextHandler.post_process_text(string))
+        
+    @staticmethod
+    def spell_corrector(string: str) -> str:
+        # https://github.com/sloria/TextBlob
+        return TextBlob(string).correct()
     
     punctuation_characters = [".", ",", "!"]
     max_sentence_number = 5

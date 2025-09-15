@@ -1,5 +1,3 @@
-from sma_llm.utils.network import *
-
 class Memory:
     # General message structure, same as dict, but easier to scale
     class Message:
@@ -34,7 +32,8 @@ class Memory:
         #update the memory itself
         self.memory.append(message)
     
-    def get_memory(self, obj: Network) -> list[dict[str, str]] | str | None:
+    def get_memory(self, obj) -> list[dict[str, str]] | str | None: # obj: Network
+        from sma_llm.utils.network import MLCLLM, PyTorchTransformers
         match obj:
             case MLCLLM():
                 return self.get_memory_as_dict()
@@ -51,7 +50,6 @@ class Memory:
 
     def get_memory_as_string(self) -> str:
         return (
-            
             self.context.get_message_as_str
             + "\n".join(message.get_message_as_str for message in self.memory)
         )

@@ -1,4 +1,6 @@
-from sma_llm.utils import *
+from multiprocessing import Process
+from threading import Thread, Event
+from sma_llm.utils import READ, SHOW, Network, Memory
 
 class Conversation:
     def __init__(self, model: Network) -> None:
@@ -15,8 +17,20 @@ class Conversation:
     def history(self) -> None:
         self.memory.get_memory()
 
-    def converse(self):
-        
+    # Recursive method instead of loop for open-ended conversation
+    def converse(self) -> None:
+        question = READ.process_input()
+        if question == "q":
+            return 
+        self.memory.update_memory(question)
 
+        # Note: Memory is updated only if the generation is completed
+        generate_answer = Process(
+            target = self.model.generate, name = "GenerateAnswer", args = (self.memory,)
+        )
+        generate_answer.start()
+        input()
+        generate_answer.terminate()
+        generate_answer.join()
 
-        pass
+        self.converse()

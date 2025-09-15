@@ -3,6 +3,7 @@ import torch #type: ignore
 import os
 from .network_interface import Network
 from sma_llm.utils.text_handler import TextHandler
+from  sma_llm.utils.memory import Memory
 # from .read_model_config import model_config
 from sma_llm.utils.io_pipeline import SHOW
 
@@ -66,11 +67,11 @@ class PyTorchTransformers(Network):
         self.tokenizer = None
         self.instance = None
 
-    def generate(self, memory: str) -> str:
+    def generate(self, memory: Memory) -> str:
         answer = ""
         live_answer = ""
-        memory = memory + "Assistant: "
-        write_output.main("Assistant: ") #type: ignore
+        memory = memory.get_memory(self) + "Assistant: "
+        SHOW.display_output("\nAssistant: ") #type: ignore
 
         with torch.no_grad():
             while True:
@@ -101,10 +102,16 @@ class PyTorchTransformers(Network):
                     or self.text_handler.stop(live_answer)):
 
                     self.text_handler.sentence_counter = 0
-                    SHOW.display_output("\n")
+                    SHOW.display_output('\nPress "ENTER" to continue.')
                     break
-            #
-        return TextHandler.post_process_text(answer)
+
+        # update the conversation's memory
+        answer = TextHandler.spell_corrector(
+            (TextHandler.post_process_text(answer))
+        )
+        memory.update_memory(answer)
+
+        return answer
 
     @property
     def max_position_embeddings(self) -> int:

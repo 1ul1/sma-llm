@@ -1,10 +1,12 @@
 from .read_input import ReadInput
-from sma_llm.utils import TextHandler
+from sma_llm.utils.text_handler import TextHandler
 
 class Keyboard(ReadInput):
     def __init__(self):
         pass
 
-    @classmethod
+    @staticmethod
     def process_input() -> str:
-        return TextHandler.pre_process_text(input("\nUser: "))
+        return TextHandler.spell_corrector(
+            TextHandler.pre_process_text(input("User: "))
+        )

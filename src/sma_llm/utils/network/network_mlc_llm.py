@@ -2,6 +2,7 @@ from mlc_llm import MLCEngine # type: ignore
 from .network_interface import Network
 from sma_llm.utils.text_handler import TextHandler
 from sma_llm.utils.io_pipeline import SHOW
+from sma_llm.utils.memory import Memory
 from .read_model_config import model_config
 
 class MLCLLM(Network):
@@ -40,24 +41,31 @@ class MLCLLM(Network):
             self.engine = None
             self.instance = None
     
-    def generate(self, memory: str) -> str:
+    def generate(self, memory: Memory) -> str:
         answer = ""
-        write_output.main("Assistant: ") #type: ignore
+        SHOW.display_output("\nAssistant: ")
         for response in self.engine.chat.completions.create(
-            messages = memory,
+            messages = memory.get_memory(self),
             model = self.model,
             stream = True
         ):
-            for choice in response.choices: #type: ignore
-                SHOW.display_output(choice.delta.content) #type: ignore
-                answer += choice.delta.content #type: ignore
+            for choice in response.choices:
+                SHOW.display_output(choice.delta.content)
+                answer += choice.delta.content
                 # Stop after n sentences
                 if (self.text_handler.stop(choice.delta.content)):
                     self.text_handler.sentence_counter = 0
                     break
 
-        SHOW.display_output("\n") #type: ignore
-        return TextHandler.post_process_text(answer)
+        SHOW.display_output('\nPress "ENTER" to continue.')
+
+        # update the conversation's memory
+        answer = TextHandler.spell_corrector(
+            (TextHandler.post_process_text(answer))
+        )
+        memory.update_memory(answer)
+
+        return answer
     
     @property
     def max_position_embeddings(self) -> int:
