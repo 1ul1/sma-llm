@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from threading import Event
+
+TOGGLE = Event()
 
 class Network(ABC):
     @abstractmethod

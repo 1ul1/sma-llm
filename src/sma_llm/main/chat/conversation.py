@@ -1,8 +1,14 @@
-from multiprocessing import Process
 from threading import Thread, Event
-from sma_llm.utils import READ, SHOW, Network, Memory
+from sma_llm.utils import READ, SHOW, Network, Memory, TOGGLE
 
 class Conversation:
+    """
+    Class used to hold all the data for a conversation.
+    Puts together all the methods and classes to simulate an open-ended conversation.
+    Attributes:
+        memory = It holds the context and the conversation so far
+        model = the model running the completion for the Assistant's response
+    """
     def __init__(self, model: Network) -> None:
         self.memory = Memory()
         self.model = model
@@ -16,21 +22,30 @@ class Conversation:
     @property
     def history(self) -> None:
         self.memory.get_memory()
-
+ 
     # Recursive method instead of loop for open-ended conversation
     def converse(self) -> None:
+        """
+        The underlying method that keeps the chat itself going,
+        generating processing input, generating answers, updating
+        the conversation data so far.
+        """
         question = READ.process_input()
-        if question == "q":
+        if question == "Q":
+            self.history
             return 
         self.memory.update_memory(question)
 
-        # Note: Memory is updated only if the generation is completed
-        generate_answer = Process(
-            target = self.model.generate, name = "GenerateAnswer", args = (self.memory,)
-        )
-        generate_answer.start()
-        input()
-        generate_answer.terminate()
-        generate_answer.join()
+        def terminate() -> None:
+            """
+            if ENTER is pressed generation is interrupted
+            """
+            input()
+            TOGGLE.set()
 
+        terminate_thread = Thread(target=terminate)
+        TOGGLE.clear()
+        terminate_thread.start()
+        self.model.generate(self.memory)
+        terminate_thread.join()
         self.converse()

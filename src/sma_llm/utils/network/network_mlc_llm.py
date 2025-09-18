@@ -1,9 +1,9 @@
 from mlc_llm import MLCEngine # type: ignore
-from .network_interface import Network
+from threading import Event
+from sma_llm.utils.network.network_interface import Network, TOGGLE
 from sma_llm.utils.text_handler import TextHandler
 from sma_llm.utils.io_pipeline import SHOW
 from sma_llm.utils.memory import Memory
-from .read_model_config import model_config
 
 class MLCLLM(Network):
     model = None # the model itself
@@ -33,9 +33,12 @@ class MLCLLM(Network):
             self.max_position_embeddings, 
             self.eos_token_id
         ])):
+            from sma_llm.utils.network.read_model_config import model_config
             self.config = model_config(self)
-            self.max_position_embeddings =  self.config["original_max_position_embeddings"]
-            self.eos_token_id = self.config["eos_token_id"]
+            self.max_position_embeddings = (
+                self.config["model_config"]["rope_scaling"]["original_max_position_embeddings"]
+            )
+            self.eos_token_id = self.config["eos_token_id"][0]
 
         if self.text_handler is None:
             self.text_handler = TextHandler()
@@ -55,6 +58,9 @@ class MLCLLM(Network):
             stream = True
         ):
             for choice in response.choices:
+                if TOGGLE.is_set():
+                    SHOW.display_output('\n')
+                    return
                 SHOW.display_output(choice.delta.content)
                 answer += choice.delta.content
                 # Stop after n sentences

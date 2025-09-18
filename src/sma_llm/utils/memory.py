@@ -6,11 +6,11 @@ class Memory:
             self.content = content
         
         @property
-        def get_message_as_dict(self) -> dict[str, str]:
+        def message_as_dict(self) -> dict[str, str]:
             return {"role": self.role, "content": self.content}
         
         @property
-        def get_message_as_str(self) -> str:
+        def message_as_str(self) -> str:
             return f"{self.role}: {self.content}"
         
     # Note: self.memory contains only the conversation, the context is separate in order
@@ -34,24 +34,26 @@ class Memory:
         #update the memory itself
         self.memory.append(message)
     
-    def get_memory(self, obj) -> list[dict[str, str]] | str | None: # obj: Network
+    def get_memory(self, obj = None) -> list[dict[str, str]] | str | None: # obj: Network
         from sma_llm.utils.network import MLCLLM, PyTorchTransformers
         match obj:
             case MLCLLM():
-                return self.get_memory_as_dict()
+                return self.memory_as_dict
             case PyTorchTransformers():
-                return self.get_memory_as_string()
+                return self.memory_as_string
             case _:
-                print(self.get_memory_as_string(), end="", flush=True)
+                print(self.memory_as_string, end="", flush=True)
 
-    def get_memory_as_dict(self) -> list[dict[str, str]]:
+    @property
+    def memory_as_dict(self) -> list[dict[str, str]]:
         return (
-            [self.context.get_message_as_dict]
-            + [message.get_message_as_dict for message in self.memory]
+            [self.context.message_as_dict]
+            + [message.message_as_dict for message in self.memory]
         )
 
-    def get_memory_as_string(self) -> str:
+    @property
+    def memory_as_string(self) -> str:
         return (
-            self.context.get_message_as_str
-            + "\n".join(message.get_message_as_str for message in self.memory)
+            self.context.message_as_str
+            + "\n".join(message.message_as_str for message in self.memory)
         )

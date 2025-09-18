@@ -22,15 +22,17 @@ do
     size_of_page="$(memory_pressure | head -1 | awk '{print $NF}' | tr -d ').')"
     
     # Calculate
-    free_pages_total="$(($free_pages+$purgeable_pages+$inactive_pages))"
-    free_mem_bytes="$(($free_pages_total*$size_of_page))"
-    free_mem="$(($free_mem_bytes/1000000000))"
-    quit="$(echo "$free_mem<=6" | bc)"
+    free_pages_total="$(echo "$free_pages+$inactive_pages" | bc)"
+    free_mem_bytes="$(echo "$free_pages_total*$size_of_page" | bc)"
+    free_mem="$(echo "scale=2; $free_mem_bytes/1000000000")"
+    used_mem="$(echo "24-$free_mem" | bc)"
+    quit="$(echo "$free_mem<=2" | bc)"
+
     if [ "$quit" -eq 1 ]
     then
-        echo -e "${Red}$free_mem   ${NC}time:$i"
+        echo -e "${Red}$used_mem   ${NC}time:$i"
         ./terminate_model.sh
     else
-        echo -e "${Green}$free_mem   ${NC}time:$i"
+        echo -e "${Green}$used_mem   ${NC}time:$i"
     fi
 done

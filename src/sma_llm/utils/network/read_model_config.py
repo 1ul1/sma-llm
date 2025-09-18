@@ -1,5 +1,7 @@
 import json
-from . import *
+from sma_llm.utils.network.network_interface import Network
+from sma_llm.utils.network.network_mlc_llm import MLCLLM
+from sma_llm.utils.network.network_pytorch_hf import PyTorchTransformers
 
 def model_config(obj: Network) -> dict:
     if isinstance(obj, MLCLLM):

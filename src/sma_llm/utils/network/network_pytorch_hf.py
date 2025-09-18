@@ -1,7 +1,8 @@
 from transformers import AutoModelForCausalLM as LLM, AutoTokenizer as Tokenizer # type: ignore
 import torch #type: ignore
 import os
-from .network_interface import Network
+from threading import Event
+from .network_interface import Network, TOGGLE
 from sma_llm.utils.text_handler import TextHandler
 from  sma_llm.utils.memory import Memory
 # from .read_model_config import model_config
@@ -40,9 +41,9 @@ class PyTorchTransformers(Network):
             cls.instance = super().__new__(cls)
         return cls.instance
 
-    def __init(self):
-        if text_handler is None:
-            text_handler = TextHandler()
+    def __init__(self):
+        if self.text_handler is None:
+            self.text_handler = TextHandler()
 
     @classmethod
     def upload_model(cls) -> None:
@@ -72,16 +73,19 @@ class PyTorchTransformers(Network):
         self.tokenizer = None
         self.instance = None
 
-    def generate(self, memory: Memory) -> str:
+    def generate(self, memory: Memory) -> str | None:
         answer = ""
         live_answer = ""
-        memory = memory.get_memory(self) + "Assistant: "
+        context = memory.get_memory(self) + "Assistant: "
         SHOW.display_output("\nAssistant: ") #type: ignore
 
         with torch.no_grad():
             while True:
+                if TOGGLE.is_set():
+                    SHOW.display_output('\n')
+                    return
                 answer += live_answer
-                inputs = self.tokenizer(memory + answer, return_tensors = "pt")
+                inputs = self.tokenizer(context + answer, return_tensors = "pt")
                 input_ids = inputs["input_ids"].to(self.mps_device)
                 attention_mask = inputs["attention_mask"].to(self.mps_device)
 
