@@ -1,5 +1,5 @@
 from . import PrintOutput
-from .speak_output import Speech
+from .speak_output import TextToSpeech
 
 SHOW = PrintOutput()
-SPEAK = Speech()
+TEXT_TO_SPEECH = TextToSpeech()

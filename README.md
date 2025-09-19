@@ -1,6 +1,6 @@
 # Speech Memory Assistant
 ## Project Layout
-```mermaid
+```
 SMA-LLM
     LICENSE
     README.md
@@ -47,7 +47,7 @@ SMA-LLM
                 my_main.py
 ```
 ## Project Flow
-```mermaid
+```
 python3 -m sma_llm.main.my_main
 
 my_main -> Initialize a chat -> Upload the "Assistant"'s model
