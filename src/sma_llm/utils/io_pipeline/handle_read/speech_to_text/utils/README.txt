@@ -1,0 +1,2 @@
+The script creates a disk image and formats it to behave like a normal dir (50 Mb), in order to not write each voice recording to RAM. It is faster to access it and prevents wear.
+Note: Macos specific!
