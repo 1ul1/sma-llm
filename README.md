@@ -18,8 +18,13 @@ SMA-LLM
                     handle_read
                         __init__.py
                         read_global_instance.py
-                        read_input.py
+                        read_input_interface.py
                         keyboard.py
+                        speech.py
+                        speech_to_text
+                            __init__.py
+                            stt.py
+
                     handle_write
                         __init__.py
                         write_global_instance.py

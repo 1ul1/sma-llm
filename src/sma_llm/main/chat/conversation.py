@@ -19,6 +19,9 @@ class Conversation:
     def set_model(self, model: Network) -> None:
         self.model = model
 
+    def set_memory(self, memory: Memory) -> None:
+        self.memory = memory
+
     @property
     def history(self) -> None:
         self.memory.get_memory()
