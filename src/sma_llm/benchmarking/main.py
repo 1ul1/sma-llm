@@ -8,9 +8,10 @@ It will print these, in this order: model upload time, Time to First Token, thro
 """
 if __name__ == "__main__":
     from transformers import AutoTokenizer as Tokenizer # type: ignore
-    from time import perf_counter
+    from time import perf_counter, sleep
     from sma_llm.utils import Memory
     from .utils import *
+    import sys
 
     tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
 
@@ -19,11 +20,11 @@ if __name__ == "__main__":
     testing_conversation.update_memory("Sure! The main causes are often summarized as Militarism, Alliances, Imperialism, and Nationalism. Tensions between European powers, competing empires, and complex alliances made war more likely.")
     testing_conversation.update_memory("How did the alliances contribute?")
     testing_conversation.update_memory("When Austria-Hungary declared war on Serbia after the Archduke’s assassination, allied countries were pulled in. Russia supported Serbia, Germany backed Austria-Hungary, and France and Britain joined due to their alliances, turning a regional conflict into a world war.")
-    question = "Can you summarize the main reasons World War I started in a concise paragraph?"
+    testing_conversation.update_memory("Can you summarize the main reasons World War I started in a concise paragraph?")
 
     assistant = None    # the model
 
-    match input('what to test: "mlc" or "pytorch"'):
+    match input('what to test: "mlc" or "py"\n'):
         case "mlc":
             assistant = MLCLLM()
         case "py":
@@ -34,15 +35,19 @@ if __name__ == "__main__":
     # getting parameters
     model_upload_time = assistant.upload_time
 
-    time_to_first_token = assistant.generate_TTFT(testing_conversation)
-
     words_generated, total_generation_time = assistant.generate(testing_conversation)
     number_tokens_generated = len(tokenizer.encode(words_generated))
 
-    throughput = number_tokens_generated / words_generated
+    time_to_first_token = assistant.generate_TTFT(testing_conversation)
 
-    # sending them to STDOUT 
-    print(f"""Engine Type: {assistant.type}
-Model Upload Time: {model_upload_time}
-Time to First Token: {time_to_first_token}
-Throughput: {throughput}""")
+    throughput = number_tokens_generated / total_generation_time
+
+    # sending them to ./results
+    with open("./sma_llm/benchmarking/results/principal.txt", "a") as f:
+        print(f"""Engine Type: {assistant.type}
+        Model Upload Time: {model_upload_time}
+        Time to First Token: {time_to_first_token}
+        Throughput: {throughput}
+        total_generation_time: {total_generation_time}""", file=f)
+    print("Done")
+    exit(0)

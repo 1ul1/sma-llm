@@ -16,7 +16,7 @@ def STT() -> str:
     process = subprocess.Popen(
         [
         'ffmpeg', '-y', '-f', 'avfoundation', '-i',
-        ':0','-ac', '1', '-ar', '16000', 'output.wav'
+        ':0','-ac', '1', '-ar', '16000', './Output/output.wav'
         ],
         stderr = subprocess.DEVNULL,
         stdout = subprocess.DEVNULL
@@ -28,7 +28,7 @@ def STT() -> str:
     process.terminate()
     process.wait()
 
-    message = (model.transcribe("output.wav"))["text"]
+    message = (model.transcribe("./Output/output.wav"))["text"]
     
     SHOW.display_output(f"User: {message}")
     return message

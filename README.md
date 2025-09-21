@@ -1,7 +1,7 @@
 # Speech Memory Assistant
 ## Project Layout
 ```
-SMA-LLM
+SMA-LL
     LICENSE
     README.md
     env.yaml
@@ -10,6 +10,7 @@ SMA-LLM
             memory_safety.sh
             run.sh
             terminate_model.sh
+        Output --- Temp for Speech to Text to save Voice Recording on RAM
         sma_llm
             __init__.py
             utils
@@ -24,7 +25,10 @@ SMA-LLM
                         speech_to_text
                             __init__.py
                             stt.py
-
+                            utils
+                                README.txt
+                                rm_tmp.sh
+                                tmp.sh
                     handle_write
                         __init__.py
                         write_global_instance.py
@@ -40,6 +44,18 @@ SMA-LLM
                     read_model_config.py
                 __init__.py
                 text_handler.py
+            benchmarking
+                __init__.py
+                main.py
+                results
+                utils
+                    __init__.py
+                    graph.py
+                    model_interface.py
+                    pytorch_hf.py
+                    mlc_llm.py
+                scripts
+                    get_memory.shcd
             models
                 download.py
                 models.md
@@ -65,6 +81,11 @@ my_main -> Initialize a chat -> Upload the "Assistant"'s model
         |           -> process & autocorrect the output
         |           -> update chat memory
         |           -> recursively repeat Converse()---|
-        |______________________________________________|
+        \_Recursive Call_______________________________/
                  
 ```
+## Benchmarking
+__MLC-LLM & HF PyTorch__ on Apple Metal
+![Graph](./src/sma_llm/benchmarking/results/principal.png)
+
+![Graph](./src/sma_llm/benchmarking/results/graph.png)

@@ -38,31 +38,34 @@ class MLCLLM(ModelInterface):
             self.engine = None
             self.instance = None
     
-    def generate(self, memory: Memory) -> str:
-        # https://llm.mlc.ai/docs/deploy/python_engine.html
+    def generate(self, memory: Memory) -> float:
+        answer = ""
         start = perf_counter()
-        response = self.engine.chat.completions.create(
-            messages=memory,
-            model=self.model,
-            stream=False,
-        )
-        end = perf_counter()     
-        return (response, end - start)
+        for response in self.engine.chat.completions.create(
+            messages=[{"role": "user", "content": "What is the meaning of life?"}],
+            model = self.model,
+            stream = True
+        ):
+            for choice in response.choices:
+                answer = answer + choice.delta.content
+        end = perf_counter()
+        return(answer, end - start)
     
-    def generate_TTFT(self, memory: Memory) -> str:
+    def generate_TTFT(self, memory: Memory) -> float:
         start_TTFT = perf_counter()
         for response in self.engine.chat.completions.create(
-            messages = memory.get_memory(self),
+            messages = memory.memory_as_dict,
             model = self.model,
             stream = True
         ):
             for choice in response.choices:
                 end_TTFT = perf_counter()
-                return end_TTFT - start_TTFT
+                break
+            break
+        return end_TTFT - start_TTFT
 
     @property
-    @staticmethod
-    def type() -> str:
+    def type(self) -> str:
         return "mlc-llm"
     
     @property

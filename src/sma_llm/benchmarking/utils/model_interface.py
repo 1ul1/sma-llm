@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 
 class ModelInterface(ABC):
     @property
-    @staticmethod
     @abstractmethod
-    def type() -> str:
+    def type(self) -> str:
         pass
     
     @property

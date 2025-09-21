@@ -56,11 +56,10 @@ class PyTorchTransformers(ModelInterface):
         self.tokenizer = None
         self.instance = None
 
-    def generate(self, memory: Memory) -> str | None:
+    def generate(self, memory: Memory) -> float:
         """Single generate() for benchmarking"""
         answer = ""
-        context = memory.get_memory(self) + "Assistant: "
-
+        context = memory.memory_as_string + "Assistant: "
         with torch.no_grad():
             inputs = self.tokenizer(context, return_tensors = "pt")
             input_ids = inputs["input_ids"].to(self.mps_device)
@@ -82,13 +81,13 @@ class PyTorchTransformers(ModelInterface):
             )
             answer = self.tokenizer.decode(output_ids[0][input_ids.size(1):], skip_special_tokens=True)
             end = perf_counter()
+        print(answer)
         return (answer, end - start)
     
-    def generate_TTFT(self, memory: Memory) -> str | None:
+    def generate_TTFT(self, memory: Memory) -> float:
         """Single generate() for benchmarking"""
         answer = ""
-        context = memory.get_memory(self) + "Assistant: "
-
+        context = memory.memory_as_string + "Assistant: "
         with torch.no_grad():
             inputs = self.tokenizer(context, return_tensors = "pt")
             input_ids = inputs["input_ids"].to(self.mps_device)
@@ -113,8 +112,7 @@ class PyTorchTransformers(ModelInterface):
         return end_TTFT - start_TTFT
     
     @property
-    @staticmethod
-    def type() -> str:
+    def type(self) -> str:
         return "pytorch-hf"
     
     @property
