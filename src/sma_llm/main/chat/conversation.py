@@ -1,5 +1,6 @@
-from threading import Thread, Event
-from sma_llm.utils import READ, SHOW, Network, Memory, TOGGLE
+from threading import Thread
+from sma_llm.utils import get_READ, Network, Memory
+from sma_llm.utils.network.network_interface import TOGGLE
 
 class Conversation:
     """
@@ -33,7 +34,7 @@ class Conversation:
         generating processing input, generating answers, updating
         the conversation data so far.
         """
-        question = READ.process_input()
+        question = get_READ().process_input()
         if question == "Q":
             self.history
             return 
@@ -52,3 +53,11 @@ class Conversation:
         self.model.generate(self.memory)
         terminate_thread.join()
         self.converse()
+
+    def converse_UI(self, question: str) -> None:
+        """Call the model to generate answer for the input.
+        This method is called by the UI
+        The termination of generation is handled by UI too"""
+        self.memory.update_memory(question)
+        TOGGLE.clear()
+        self.model.generate(self.memory)

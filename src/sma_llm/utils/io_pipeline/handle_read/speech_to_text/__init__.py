@@ -1,1 +1,1 @@
-from .stt import STT
+from .stt import SpeechToText

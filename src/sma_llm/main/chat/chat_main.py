@@ -1,8 +1,8 @@
 """Define and start Conversations."""
 
 from .conversation import Conversation
-from sma_llm.utils import MLCLLM, PyTorchTransformers # the engines
-# from sma_llm.utils import TEXT_TO_SPEECH, SPEECH_TO_TEXT
+from sma_llm.utils import MLCLLM, PyTorchTransformers
+from sma_llm.utils import start_GUI, set_CONVERSATION_UI
 
 def run():
     """Choose an engine and start generating."""
@@ -16,5 +16,6 @@ def run():
 
     chat.converse()
 
-if __name__ == "__main__":
-    run()
+def run_UI():
+    set_CONVERSATION_UI(Conversation(MLCLLM()))
+    start_GUI()

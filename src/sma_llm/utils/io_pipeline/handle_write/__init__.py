@@ -1,6 +1,3 @@
-from .print_output import PrintOutput
-from .write_output_interface import WriteOutput
-from .write_global_instance import SHOW, TEXT_TO_SPEECH
-from .speak_output import TextToSpeech
+from .write_global_instance import get_SHOW, get_TEXT_TO_SPEECH, set_SHOW
 
-__all__ = ["PrintOutput", "WriteOutput", "SHOW", "TEXT_TO_SPEECH"]
+__all__ = ["get_SHOW", "get_TEXT_TO_SPEECH", "set_SHOW"]

@@ -1,5 +1,5 @@
 import os
-from .chat import run
+from .chat import run, run_UI
 
 if __name__ == "__main__":
     # check for internet
@@ -7,4 +7,5 @@ if __name__ == "__main__":
         print("No Internet access  ✔ ✔ ✔")
     else:
         print("Internet access ✘ ✘ ✘")
-    run()
+        
+    run_UI()

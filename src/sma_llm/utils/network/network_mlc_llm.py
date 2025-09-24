@@ -1,8 +1,8 @@
-from mlc_llm import MLCEngine # type: ignore
+from mlc_llm import MLCEngine
 from threading import Event
 from sma_llm.utils.network.network_interface import Network, TOGGLE
 from sma_llm.utils.text_handler import TextHandler
-from sma_llm.utils.io_pipeline import SHOW
+from sma_llm.utils.io_pipeline import get_SHOW
 from sma_llm.utils.memory import Memory
 
 class MLCLLM(Network):
@@ -51,7 +51,7 @@ class MLCLLM(Network):
     
     def generate(self, memory: Memory) -> str:
         answer = ""
-        SHOW.display_output("\nAssistant: ")
+        get_SHOW().display_output("\nAssistant: ")
         for response in self.engine.chat.completions.create(
             messages = memory.get_memory(self),
             model = self.model,
@@ -59,22 +59,25 @@ class MLCLLM(Network):
         ):
             for choice in response.choices:
                 if TOGGLE.is_set():
-                    SHOW.display_output('\n')
+                    get_SHOW().display_output('\n')
                     return
-                SHOW.display_output(choice.delta.content)
+                get_SHOW().display_output(choice.delta.content)
                 answer += choice.delta.content
                 # Stop after n sentences
                 if (self.text_handler.stop(choice.delta.content)):
                     self.text_handler.sentence_counter = 0
                     break
 
-        SHOW.display_output('\nPress "ENTER" to continue.')
+        get_SHOW().display_output('\nPress "ENTER" to continue.')
 
         # update the conversation's memory
         answer = TextHandler.spell_corrector(
             (TextHandler.post_process_text(answer))
         )
         memory.update_memory(answer)
+
+        TOGGLE.set()
+        get_SHOW().display_output("")
 
         return answer
     

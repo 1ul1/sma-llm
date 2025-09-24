@@ -1,7 +1,7 @@
 # Speech Memory Assistant
 ## Project Layout
 ```
-SMA-LL
+SMA-LLM
     LICENSE
     README.md
     env.yaml
@@ -35,7 +35,11 @@ SMA-LL
                         write_output_interface.py
                         speak_output.py
                         print_output.py
-                memory.py
+                        write_UI.py
+                gui
+                    __init__.py
+                    frontend.py
+                    global_instances.py
                 network
                     network_pytorch_hf.py
                     network_interface.py
@@ -44,6 +48,7 @@ SMA-LL
                     read_model_config.py
                 __init__.py
                 text_handler.py
+                memory.py
             benchmarking
                 __init__.py
                 main.py
@@ -55,7 +60,7 @@ SMA-LL
                     pytorch_hf.py
                     mlc_llm.py
                 scripts
-                    get_memory.shcd
+                    get_memory.sh
             models
                 download.py
                 models.md
@@ -86,6 +91,7 @@ my_main -> Initialize a chat -> Upload the "Assistant"'s model
 ```
 ## Benchmarking
 __MLC-LLM & HF PyTorch__ on Apple Metal
+
 ![Graph](./src/sma_llm/benchmarking/results/principal.png)
 
 ![Graph](./src/sma_llm/benchmarking/results/graph.png)

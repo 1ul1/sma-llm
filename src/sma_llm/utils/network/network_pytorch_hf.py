@@ -1,12 +1,12 @@
-from transformers import AutoModelForCausalLM as LLM, AutoTokenizer as Tokenizer # type: ignore
-import torch #type: ignore
+from transformers import AutoModelForCausalLM as LLM, AutoTokenizer as Tokenizer
+import torch
 import os
 from threading import Event
 from .network_interface import Network, TOGGLE
 from sma_llm.utils.text_handler import TextHandler
 from  sma_llm.utils.memory import Memory
 # from .read_model_config import model_config
-from sma_llm.utils.io_pipeline import SHOW
+from sma_llm.utils.io_pipeline import get_SHOW
 
 #huggingface/tokenizers: The current process just got forked, after parallelism has already been used.
 #Disabling parallelism to avoid deadlocks...
@@ -77,12 +77,12 @@ class PyTorchTransformers(Network):
         answer = ""
         live_answer = ""
         context = memory.get_memory(self) + "Assistant: "
-        SHOW.display_output("\nAssistant: ") #type: ignore
+        get_SHOW().display_output("\nAssistant: ") #type: ignore
 
         with torch.no_grad():
             while True:
                 if TOGGLE.is_set():
-                    SHOW.display_output('\n')
+                    get_SHOW().display_output('\n')
                     return
                 answer += live_answer
                 inputs = self.tokenizer(context + answer, return_tensors = "pt")
@@ -103,15 +103,15 @@ class PyTorchTransformers(Network):
                     max_new_tokens = 2
                 )
                 live_answer = self.tokenizer.decode(output_ids[0][input_ids.size(1):], skip_special_tokens=True)
-                live_answer = TextHandler.post_process_text(live_answer) #type: ignore
-                SHOW.display_output(live_answer) #type: ignore
+                live_answer = TextHandler.post_process_text(live_answer)
+                get_SHOW().display_output(live_answer)
                 
                 # STOP
                 if (self.eos_token_id in (output_ids[0][input_ids.size(1):].tolist()) 
                     or self.text_handler.stop(live_answer)):
 
                     self.text_handler.sentence_counter = 0
-                    SHOW.display_output('\nPress "ENTER" to continue.')
+                    get_SHOW().display_output('\nPress "ENTER" to continue.')
                     break
 
         # update the conversation's memory
@@ -119,6 +119,9 @@ class PyTorchTransformers(Network):
             (TextHandler.post_process_text(answer))
         )
         memory.update_memory(answer)
+
+        TOGGLE.set()
+        get_SHOW().display_output("")
 
         return answer
 

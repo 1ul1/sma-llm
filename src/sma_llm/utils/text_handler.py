@@ -32,7 +32,7 @@ class TextHandler:
     @staticmethod
     def spell_corrector(string: str) -> str:
         # https://github.com/sloria/TextBlob
-        string = str(TextBlob(string).correct())
+        # string = str(TextBlob(string).correct())
         return string
     
     punctuation_characters = [".", ",", "!"]
