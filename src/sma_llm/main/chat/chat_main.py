@@ -16,6 +16,6 @@ def run():
 
     chat.converse()
 
-def run_UI():
+def run_UI() -> None:
     set_CONVERSATION_UI(Conversation(MLCLLM()))
     start_GUI()

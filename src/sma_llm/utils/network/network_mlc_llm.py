@@ -51,7 +51,7 @@ class MLCLLM(Network):
     
     def generate(self, memory: Memory) -> str:
         answer = ""
-        get_SHOW().display_output("\nAssistant: ")
+        # get_SHOW().display_output("\nAssistant: ")
         for response in self.engine.chat.completions.create(
             messages = memory.get_memory(self),
             model = self.model,
@@ -59,7 +59,8 @@ class MLCLLM(Network):
         ):
             for choice in response.choices:
                 if TOGGLE.is_set():
-                    get_SHOW().display_output('\n')
+                    memory.forget()
+                    # get_SHOW().display_output('\n')
                     return
                 get_SHOW().display_output(choice.delta.content)
                 answer += choice.delta.content
@@ -68,7 +69,7 @@ class MLCLLM(Network):
                     self.text_handler.sentence_counter = 0
                     break
 
-        get_SHOW().display_output('\nPress "ENTER" to continue.')
+        # get_SHOW().display_output('\nPress "ENTER" to continue.')
 
         # update the conversation's memory
         answer = TextHandler.spell_corrector(
@@ -77,7 +78,7 @@ class MLCLLM(Network):
         memory.update_memory(answer)
 
         TOGGLE.set()
-        get_SHOW().display_output("")
+        # get_SHOW().display_output("")
 
         return answer
     

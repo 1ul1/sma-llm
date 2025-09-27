@@ -14,12 +14,15 @@ class MLCLLM(ModelInterface):
     _upload_time = None
 
     # Singletone: the instance exists only when the model is on RAM
-    def __new__(cls):
+    def __new__(cls, engine = None):
         if cls.instance is None:
             cls.model =  "./sma_llm/models/mlc_llm/model"
             try:
                 upload_start = perf_counter()
-                cls.engine = MLCEngine(cls.model)
+                if engine is None:
+                    cls.engine = MLCEngine(cls.model)
+                else:
+                    cls.engine = engine
                 upload_done = perf_counter()
                 cls._upload_time = upload_done - upload_start
             except Exception as e:
@@ -29,7 +32,7 @@ class MLCLLM(ModelInterface):
             cls.instance = super(MLCLLM, cls).__new__(cls)
         return cls.instance
     
-    def __init__(self):
+    def __init__(self, _ = None):
        pass
 
     # Free memory after use

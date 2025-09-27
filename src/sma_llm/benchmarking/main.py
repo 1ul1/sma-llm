@@ -6,11 +6,11 @@ Time to First Token:    Time between receiving prompts and producing first token
 
 It will print these, in this order: model upload time, Time to First Token, throughput
 """
-if __name__ == "__main__":
-    from transformers import AutoTokenizer as Tokenizer # type: ignore
-    from time import perf_counter, sleep
+def main(internal_call: bool = False):
+    from transformers import AutoTokenizer as Tokenizer
     from sma_llm.utils import Memory
-    from .utils import *
+    from .utils import MLCLLM, PyTorchTransformers
+    from sma_llm.utils.gui.global_instances import get_CONVERSATION_UI
     import sys
 
     tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
@@ -24,13 +24,17 @@ if __name__ == "__main__":
 
     assistant = None    # the model
 
-    match input('what to test: "mlc" or "py"\n'):
-        case "mlc":
-            assistant = MLCLLM()
-        case "py":
-            assistant = PyTorchTransformers()
-        case _:
-            raise ValueError("haven't selected anything")
+    if not internal_call:
+        match input('what to test: "mlc" or "py"\n'):
+            case "mlc":
+                assistant = MLCLLM()
+                print("OVER")
+            case "py":
+                assistant = PyTorchTransformers()
+            case _:
+                raise ValueError("haven't selected anything")
+    else:
+        assistant = MLCLLM(get_CONVERSATION_UI().model.engine)
     
     # getting parameters
     model_upload_time = assistant.upload_time
@@ -43,11 +47,22 @@ if __name__ == "__main__":
     throughput = number_tokens_generated / total_generation_time
 
     # sending them to ./results
-    with open("./sma_llm/benchmarking/results/principal.txt", "a") as f:
-        print(f"""Engine Type: {assistant.type}
-        Model Upload Time: {model_upload_time}
-        Time to First Token: {time_to_first_token}
-        Throughput: {throughput}
-        total_generation_time: {total_generation_time}""", file=f)
-    print("Done")
-    exit(0)
+    if not internal_call:
+        with open("./sma_llm/benchmarking/results/principal.txt", "a") as f:
+            print(f"""Engine Type: {assistant.type}
+            Model Upload Time: {model_upload_time}
+            Time to First Token: {time_to_first_token}
+            Throughput: {throughput}
+            total_generation_time: {total_generation_time}""", file=f)
+        print("Done")
+        sys.exit(1)
+    else:
+        return (f"""
+Engine Type: {assistant.type}
+Time to First Token: {time_to_first_token}
+Throughput: {throughput}"""
+        )
+            
+
+if __name__ == "__main__":
+    main()

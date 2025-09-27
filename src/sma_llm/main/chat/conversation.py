@@ -24,8 +24,8 @@ class Conversation:
         self.memory = memory
 
     @property
-    def history(self) -> None:
-        self.memory.get_memory()
+    def history(self) -> str:
+        return self.memory.get_memory()
  
     # Recursive method instead of loop for open-ended conversation
     def converse(self) -> None:
@@ -59,5 +59,4 @@ class Conversation:
         This method is called by the UI
         The termination of generation is handled by UI too"""
         self.memory.update_memory(question)
-        TOGGLE.clear()
         self.model.generate(self.memory)

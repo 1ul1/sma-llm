@@ -1,6 +1,8 @@
 """global instances."""
 
+# The GUI app
 _FRONTEND = None
+# The Conversation instance used, "_UI" cause it was added specifically for the GUI
 _CONVERSATION_UI = None
 
 def set_CONVERSATION_UI(obj) -> None:
@@ -23,3 +25,7 @@ def start_GUI():
     global _FRONTEND
     _FRONTEND = Frontend()
     _FRONTEND.run()
+
+def start_wait_screen():
+    from .wait_screen import WaitScreen
+    WaitScreen()

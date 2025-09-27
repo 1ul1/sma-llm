@@ -1,4 +1,5 @@
 class Memory:
+    """All data sturctures and logic behind the conversation history and context."""
     # General message structure, same as dict, but easier to scale
     class Message:
         def __init__(self, role: str, content: str) -> None:
@@ -33,6 +34,11 @@ class Memory:
         self.turn = "assistant" if self.turn == "user" else "user"
         #update the memory itself
         self.memory.append(message)
+
+    def forget(self) -> None:
+        """Useful when generation is stopped before finishing."""
+        self.memory = self.memory[:-1]
+        self.turn = "assistant" if self.turn == "user" else "user"
     
     def get_memory(self, obj = None) -> list[dict[str, str]] | str | None: # obj: Network
         from sma_llm.utils.network import MLCLLM, PyTorchTransformers
@@ -43,6 +49,7 @@ class Memory:
                 return self.memory_as_string
             case _:
                 print(self.memory_as_string, end="", flush=True)
+                return self.memory_as_string
 
     @property
     def memory_as_dict(self) -> list[dict[str, str]]:

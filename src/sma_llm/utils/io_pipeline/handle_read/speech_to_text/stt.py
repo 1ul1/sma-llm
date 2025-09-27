@@ -20,7 +20,8 @@ class SpeechToText:
         return cls.instance
 
     def __init__(self):
-        pass
+        if self.model is None:
+            self.model = whisper.load_model("medium.en")
 
     def terminate(self):
         self.model = None
@@ -28,8 +29,8 @@ class SpeechToText:
 
     def STT(self, call_from_UI = False) -> None:
         """Record message, save it in."""
-        from sma_llm.utils.io_pipeline.handle_write.write_global_instance import get_SHOW
-        get_SHOW().display_output("System: Listening... ")
+        # from sma_llm.utils.io_pipeline.handle_write.write_global_instance import get_SHOW
+        # get_SHOW().display_output("System: Listening... ")
         self.process = subprocess.Popen(
             [
             'ffmpeg', '-y', '-f', 'avfoundation', '-i',
@@ -38,8 +39,6 @@ class SpeechToText:
             stderr = subprocess.DEVNULL,
             stdout = subprocess.DEVNULL
         )
-        # upload model while waiting for input message to be recorded
-        self.model = whisper.load_model("medium.en")
 
         if not call_from_UI:
             self.STT_normal()
@@ -62,11 +61,9 @@ class SpeechToText:
 
     def STT_UI(self) -> str:
         """Message is recorded until the UI button signals it"""
-        from sma_llm.utils.io_pipeline.handle_write.write_global_instance import get_SHOW
         self.process.terminate()
         self.process.wait()
         message = (self.model.transcribe("./Output/output.wav"))["text"]
-        get_SHOW().display_output(f"User: {message}")
         self.terminate()
 
         return message

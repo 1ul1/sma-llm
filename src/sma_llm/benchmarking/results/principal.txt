@@ -1,0 +1,48 @@
+Engine Type: pytorch-hf
+        Model Upload Time: 9.073545875000491
+        Time to First Token: 0.2531775000006746
+        Throughput: 12.457086834402736
+Engine Type: pytorch-hf
+        Model Upload Time: 7.439727208000477
+        Time to First Token: 0.24683100000038394
+        Throughput: 12.85074879400482
+Engine Type: pytorch-hf
+        Model Upload Time: 7.524281834001158
+        Time to First Token: 0.2450391660004243
+        Throughput: 13.046576865616666
+Engine Type: pytorch-hf
+        Model Upload Time: 7.536453332999372
+        Time to First Token: 0.24450358300055086
+        Throughput: 12.961270623784833
+Engine Type: pytorch-hf
+        Model Upload Time: 7.326171791000888
+        Time to First Token: 0.2508186670002033
+        Throughput: 13.027325669074818
+Engine Type: pytorch-hf
+        Model Upload Time: 8.703338124999846
+        Time to First Token: 0.24544458299988037
+        Throughput: 11.450820730374248
+Engine Type: pytorch-hf
+        Model Upload Time: 7.50526600000012
+        Time to First Token: 0.2472905829999945
+        Throughput: 12.868604171937296
+Engine Type: mlc-llm
+        Model Upload Time: 7.520125250000092
+        Time to First Token: 0.2215218339997591
+        Throughput: 33.812683338230705
+Engine Type: mlc-llm
+        Model Upload Time: 7.82370125000034
+        Time to First Token: 0.32167904200014164
+        Throughput: 28.50902071720433
+Engine Type: mlc-llm
+        Model Upload Time: 7.184821249999914
+        Time to First Token: 0.21863549999989118
+        Throughput: 30.7293448261057
+Engine Type: mlc-llm
+        Model Upload Time: 7.119545542000196
+        Time to First Token: 0.21988716600026237
+        Throughput: 33.37272860487967
+Engine Type: mlc-llm
+        Model Upload Time: 7.185321124999973
+        Time to First Token: 0.21830391699995744
+        Throughput: 32.243416588163015
