@@ -1,0 +1,1 @@
+set file_name to POSIX path of (choose file name with prompt "Save file as:" default name "untitled" default location (path to desktop))
