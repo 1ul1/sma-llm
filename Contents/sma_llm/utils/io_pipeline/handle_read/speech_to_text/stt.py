@@ -31,6 +31,7 @@ class SpeechToText:
         """Record message, save it in."""
         # from sma_llm.utils.io_pipeline.handle_write.write_global_instance import get_SHOW
         # get_SHOW().display_output("System: Listening... ")
+        print ("System: Listening... ")
         self.process = subprocess.Popen(
             [
             'ffmpeg', '-y', '-f', 'avfoundation', '-i',
@@ -55,7 +56,6 @@ class SpeechToText:
         message = (self.model.transcribe("./Output/output.wav"))["text"]
         
         get_SHOW().display_output(f"User: {message}")
-        self.terminate()
 
         return message
 
@@ -64,6 +64,5 @@ class SpeechToText:
         self.process.terminate()
         self.process.wait()
         message = (self.model.transcribe("./Output/output.wav"))["text"]
-        self.terminate()
 
         return message

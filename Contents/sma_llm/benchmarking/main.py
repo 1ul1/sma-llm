@@ -12,7 +12,7 @@ def main(internal_call: bool = False):
     from .utils import MLCLLM, PyTorchTransformers
     from sma_llm.utils.gui.global_instances import get_CONVERSATION_UI
     import sys
-
+    
     tokenizer = Tokenizer.from_pretrained("./sma_llm/models/hf_pytorch/tokenizer")
 
     testing_conversation = Memory()
