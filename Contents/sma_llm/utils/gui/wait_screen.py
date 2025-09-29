@@ -13,17 +13,20 @@ class WaitScreen():
         self.window = Widget.QWidget()
         self.window.setLayout(self.layout)
         self.window.setWindowFlags(Qt.FramelessWindowHint)
-
-        self.window.setFixedSize(700, 400)
-        self.window.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.window.setAttribute(Qt.WA_TranslucentBackground)
+        (width, height) = Widget.QApplication.screens()[0].availableSize().toTuple()
+        self.window.setGeometry((width - 740) / 2, (height - 470) / 2, 740, 470)
+        self.window.setFixedSize(740, 470)
 
         # Text
-        self.text = Widget.QLabel()
-        self.layout.addWidget(self.text, alignment=Qt.AlignCenter)
+        self.container = Widget.QWidget()
+        self.text = Widget.QLabel(self.container, alignment=Qt.AlignCenter)
+        self.layout.addWidget(self.text)
 
         self.text.setStyleSheet(
-            "background-color: transparent; color: black;"
-            + " font-size: 32px; text-align: center; font-weight: bold;"
+            "background-color: white; color: black;"
+            + " font-size: 64px; text-align: center; font-weight: bold;"
+            + " border-radius: 10px"
         )
         self.text.setText("Launching   ")
 
