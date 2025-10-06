@@ -3,6 +3,8 @@
 from .conversation import Conversation
 from sma_llm.utils import MLCLLM, PyTorchTransformers
 from sma_llm.utils import start_GUI, set_CONVERSATION_UI
+import signal
+import os
 
 def run():
     """Choose an engine and start generating."""
@@ -17,5 +19,8 @@ def run():
     chat.converse()
 
 def run_UI() -> None:
-    set_CONVERSATION_UI(Conversation(MLCLLM()))
-    start_GUI()
+    try:
+        set_CONVERSATION_UI(Conversation(MLCLLM()))
+        start_GUI()
+    except:
+        os.killpg(os.getpgid(os.getpid()), signal.SIGTERM)

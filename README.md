@@ -212,8 +212,9 @@ SMA-LLM
                 gui
                     __init__.py
                     frontend.py
-                    global_instances.py
                     chat_bubble.py
+                    read_input.py
+                    global_instances.py
                     task_automation.py
                     wait_screen.py
                     task_scripts

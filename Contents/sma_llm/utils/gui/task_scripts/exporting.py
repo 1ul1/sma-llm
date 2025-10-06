@@ -6,8 +6,10 @@ import subprocess
 def export() -> None:
     """Shell commands directly"""
     command = ["osascript", "./sma_llm/utils/gui/task_scripts/ChooseWhereToSave.applescript"]
-
-    save_path = subprocess.run(command, capture_output = True, text = True).stdout.strip()
+    try:
+        save_path = subprocess.run(command, capture_output = True, text = True).stdout.strip()
+    except:
+        return
 
     with open(".history_tmp.txt", "w") as tmp:
         tmp.write(get_CONVERSATION_UI().history)

@@ -5,6 +5,19 @@ import multiprocessing
 import sys
 import signal
 
+def exit_gracefully(_1, _2):
+    """Cleanup.
+    When quit, the app must remove the formatted disk image used to store audio recordings on RAM"""
+    global ok
+    if ok:
+        subprocess.run(
+            "./sma_llm/utils/io_pipeline/handle_read/speech_to_text/utils/rm_tmp.sh",
+            shell = True
+        )
+        main_process.terminate()
+        ok = False
+    sys.exit(0)
+
 if __name__ == "__main__":
     # check for internet
     if (os.WEXITSTATUS(os.system("curl --max-time 1 https://google.com > /dev/null 2>&1")) == 28):
@@ -14,19 +27,6 @@ if __name__ == "__main__":
         
     ok = False # only try to clean it once
     main_process = None
-
-    def exit_gracefully(_1, _2):
-        """Cleanup.
-        When quit, the app must remove the formatted disk image used to store audio recordings on RAM"""
-        global ok
-        if ok:
-            subprocess.run(
-                "./sma_llm/utils/io_pipeline/handle_read/speech_to_text/utils/rm_tmp.sh",
-                shell = True
-            )
-            main_process.terminate()
-            ok = False
-        sys.exit(0)
 
     signal.signal(signal.SIGINT, exit_gracefully)
     signal.signal(signal.SIGTERM, exit_gracefully)

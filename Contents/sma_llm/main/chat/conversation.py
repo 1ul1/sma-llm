@@ -58,5 +58,6 @@ class Conversation:
         """Call the model to generate answer for the input.
         This method is called by the UI
         The termination of generation is handled by UI too"""
-        self.memory.update_memory(question)
-        self.model.generate(self.memory)
+        self.memory.update_memory(self.model.text_handler.pre_process_text(question))
+        generate = Thread(target=self.model.generate, args=(self.memory,))
+        generate.start()

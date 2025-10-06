@@ -35,10 +35,16 @@ class MLCLLM(Network):
         ])):
             from sma_llm.utils.network.read_model_config import model_config
             self.config = model_config(self)
-            self.max_position_embeddings = (
-                self.config["model_config"]["rope_scaling"]["original_max_position_embeddings"]
-            )
-            self.eos_token_id = self.config["eos_token_id"][0]
+            try:
+                self.max_position_embeddings = (
+                    self.config["model_config"]["rope_scaling"]["original_max_position_embeddings"]
+                )
+            except:
+                self.max_position_embeddings = 2000
+            try:
+                self.eos_token_id = self.config["eos_token_id"][0]
+            except:
+                self.eos_token_id = None
 
         if self.text_handler is None:
             self.text_handler = TextHandler()
