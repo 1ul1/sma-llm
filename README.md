@@ -213,6 +213,8 @@ SMA-LLM
                     __init__.py
                     frontend.py
                     chat_bubble.py
+                    move_event.py
+                    resize_event.py
                     read_input.py
                     global_instances.py
                     task_automation.py

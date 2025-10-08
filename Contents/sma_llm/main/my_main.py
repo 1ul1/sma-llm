@@ -19,6 +19,7 @@ def exit_gracefully(_1, _2):
     sys.exit(0)
 
 if __name__ == "__main__":
+    """Starting point of project."""
     # check for internet
     if (os.WEXITSTATUS(os.system("curl --max-time 1 https://google.com > /dev/null 2>&1")) == 28):
         print("No Internet access  ✘ ✘ ✘")

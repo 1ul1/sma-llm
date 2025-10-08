@@ -3,7 +3,7 @@ import PySide6.QtWidgets as Widget
 from PySide6.QtCore import Qt
 from sma_llm.utils.network.network_interface import TOGGLE
 from sma_llm.utils.io_pipeline import get_TEXT_TO_SPEECH
-from .global_instances import get_FRONTEND
+from .global_instances import get_FRONTEND, MESSAGES_PADDING
 
 class ChatBubble(Widget.QWidget):
     """Each class instance is a message bubble."""
@@ -18,25 +18,23 @@ class ChatBubble(Widget.QWidget):
         self.message = Widget.QLabel()
         self.message.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.message.setSizePolicy(Widget.QSizePolicy.Minimum, Widget.QSizePolicy.Minimum)
-        self.message.setMaximumWidth(get_FRONTEND().window.width() * 0.90)
+        self.message.setMaximumWidth(get_FRONTEND().window.width() - MESSAGES_PADDING * 2)
         self.message.setWordWrap(True)
         self.message.setText(string)
 
         self.layout = Widget.QHBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
         if internal_call is False:
             self.message.setStyleSheet(
-                "background-color: transparent; color: #B0FFFD; padding-left: 120px; font-size: 20px;"
-                + " text-align: left; font-weight: bold; padding-right: 120px; padding-top: 20px"
+                "background-color: transparent; color: #B0FFFD; font-size: 20px; font-weight: bold;"
             )
         else:
             # #FFB0DA
             self.layout.addStretch()
             self.message.setStyleSheet(
-                "background-color: transparent; color: white; padding-right: 150px; font-size: 20px; "
-                + "text-align: right; font-weight: bold; padding-left: 300px; padding-top: 20px"
+                "background-color: transparent; color: white; " 
+                + "font-size: 20px; font-weight: bold; padding-left: 300px"
             )
 
         self.layout.addWidget(self.message)

@@ -1,4 +1,10 @@
-"""global instances."""
+"""global instances and variables."""
+
+# GUI elements sizes
+MESSAGES_PADDING = 150
+BOTTOM_BAR_SIZE = 84
+INPUT_FONT = 25
+INPUT_BAR_SIZE = 50
 
 # The GUI app
 _FRONTEND = None

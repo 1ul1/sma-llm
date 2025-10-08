@@ -4,10 +4,12 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont
 from sma_llm.utils.network.network_interface import TOGGLE
 from sma_llm.utils.io_pipeline import get_SPEECH_TO_TEXT, get_TEXT_TO_SPEECH
-from .global_instances import get_CONVERSATION_UI
+from .global_instances import get_CONVERSATION_UI, MESSAGES_PADDING, BOTTOM_BAR_SIZE, INPUT_FONT, INPUT_BAR_SIZE
 from .chat_bubble import ChatBubble
 from .task_automation import check_if_task
 from .read_input import ReadInputUI
+from .move_event import MoveEvent
+from .resize_event import ResizeEvent
 from time import sleep
 from queue import Queue
 import os
@@ -34,8 +36,8 @@ class Frontend():
         # Make the window appear at center
         (width, height) = Widget.QApplication.screens()[0].availableSize().toTuple()
 
-        self.window.setGeometry((width - 1200) / 2, (height - 750) / 2, 1200, 750)
-        self.window.setMinimumSize(1200, 750)
+        self.window.setGeometry((width - 800) / 2, (height - 500) / 2, 800, 500)
+        self.window.setMinimumSize(800, 500)
         self.window.setContentsMargins(0, 0, 0, 0)
         self.window.setLayout(self.layout)
         self.window.setWindowFlag(Qt.FramelessWindowHint)
@@ -59,16 +61,27 @@ class Frontend():
         self.layout.addWidget(self.top)
         
         # Close Button
-        self.close = Widget.QPushButton("X")
-        self.close.setFixedSize(16, 16)
-        self.close.setStyleSheet(
+        close = Widget.QPushButton("X")
+        close.setFixedSize(16, 16)
+        close.setStyleSheet(
             "background-color: grey; color: white;"
             + " border-radius: 8px; font-size: 12px; text-align: center;"
             + " font-weight: bold; border: none; padding: 0px;"
         )
-        self.close.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.close.pressed.connect(self.window.close)
-        self.top_layout.addWidget(self.close)
+        close.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        close.pressed.connect(self.window.close)
+        self.top_layout.addWidget(close)
+
+        # Hide Button
+        self.fullscreen = Widget.QPushButton("⛶")
+        self.fullscreen.setFixedSize(16, 16)
+        self.fullscreen.setStyleSheet(
+            "background-color: grey; color: white;"
+            + " border-radius: 8px; font-size: 12px; text-align: center;"
+            + " font-weight: bold; border: none; padding: 0px;"
+        )
+        self.fullscreen.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.top_layout.addWidget(self.fullscreen)
 
         # Body
         self.body = Widget.QWidget()
@@ -85,19 +98,21 @@ class Frontend():
 
         # Conversation UI
         self.conversation_full = Widget.QScrollArea()
-        self.conversation_full.setSizePolicy(Widget.QSizePolicy.Expanding, Widget.QSizePolicy.Expanding)
-        self.conversation_full.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.conversation_full.setSizePolicy(Widget.QSizePolicy.Minimum, Widget.QSizePolicy.Minimum)
+        self.conversation_full.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.conversation_full.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.conversation_full.setContentsMargins(0, 0, 0, 0)
         self.conversation_full.setWidgetResizable(True)
         self.conversation_full.setStyleSheet("background-color: transparent")
         self.conversation = Widget.QWidget()
+        self.conversation.setSizePolicy(Widget.QSizePolicy.Minimum, Widget.QSizePolicy.Minimum)
         self.conversation.setStyleSheet(
             "background-color: transparent; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;"
         )
         self.conversation_full.setWidget(self.conversation)
         self.message_layout = Widget.QVBoxLayout()
-        self.message_layout.setSpacing(0)
-        self.message_layout.setContentsMargins(0, 0, 0, 0)
+        self.message_layout.setSpacing(20)
+        self.message_layout.setContentsMargins(MESSAGES_PADDING, 20, MESSAGES_PADDING, 20)
         self.message_layout.setAlignment(Qt.AlignTop)
         self.conversation.setLayout(self.message_layout)
         
@@ -109,7 +124,7 @@ class Frontend():
         self.bottom.setStyleSheet(
             "background-color: transparent; border: none"
         )
-        self.bottom.setFixedHeight(84)
+        self.bottom.setFixedHeight(BOTTOM_BAR_SIZE)
         self.bottom.setContentsMargins(0, 0, 0, 0)
         self.bottom_layout = Widget.QHBoxLayout()
         self.bottom_layout.setAlignment(Qt.AlignVCenter)
@@ -120,7 +135,7 @@ class Frontend():
         # Dark Mode | Light Mode Toggle Button
         self.light_mode_toggle = False
         self.light_mode = Widget.QPushButton("☀️")
-        self.light_mode.setFont(QFont("", 30))
+        self.light_mode.setFont(QFont("", INPUT_FONT))
         self.light_mode.setStyleSheet(
             "background-color: transparent; border: none; padding: 0px;"
         )
@@ -144,14 +159,14 @@ class Frontend():
 
         # microphone
         self.input_vocal = Widget.QPushButton("🎤")# 🎤
-        self.input_vocal.setFont(QFont("", 30))
+        self.input_vocal.setFont(QFont("", INPUT_FONT))
         self.input_vocal.setStyleSheet("background-color: transparent; color: #43BAA2; border: none")
         self.input_vocal.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         ST_layout.addWidget(self.input_vocal)
 
         # text to speech
         self.output_vocal = Widget.QPushButton("🔇")
-        self.output_vocal.setFont(QFont("", 30))
+        self.output_vocal.setFont(QFont("", INPUT_FONT))
         self.output_vocal.setStyleSheet("background-color: transparent; color: #43BAA2; border: none")
         self.output_vocal.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         ST_layout.addWidget(self.output_vocal)
@@ -160,6 +175,13 @@ class Frontend():
         self.body_layout.addWidget(self.bottom)
 
     def run(self):
+        # Handle Events
+        move_event = MoveEvent(self.window)
+        self.top.installEventFilter(move_event)
+        resize_event = ResizeEvent()
+        self.window.installEventFilter(resize_event)
+
+        self.fullscreen.pressed.connect(self.maximize)
         self.input_vocal.clicked.connect(self.read_vocal)
         self.output_vocal.clicked.connect(self.set_vocal)
         self.light_mode.pressed.connect(self.change_light_mode)
@@ -181,16 +203,16 @@ class Frontend():
             + " border-radius: 20px; padding-left: 20px; padding-right: 20px;"
             + " padding-top: 5px; padding-bottom: 5px"
         )
-        self.input_message.setFont(QFont("", 30))
+        self.input_message.setFont(QFont("Monospace", INPUT_FONT))
         self.input_message.setParent(self.body)
         self.input_message.setWindowFlag(Qt.FramelessWindowHint)
         self.input_message.move(
-            170,
-            self.body.height() - self.bottom.height() + 17
+            MESSAGES_PADDING,
+            self.body.height() - (BOTTOM_BAR_SIZE + INPUT_BAR_SIZE) / 2
         )
-        self.input_message.setFixedHeight(50)
+        self.input_message.setFixedHeight(INPUT_BAR_SIZE)
         self.input_message.setFixedWidth(
-            self.body.width() - 320
+            self.body.width() - MESSAGES_PADDING * 2
         )
         self.input_message.show()
 
@@ -261,14 +283,18 @@ class Frontend():
 
             self.input_message.clear()
             return
+        
+        chat_bubble = ChatBubble(my_input, internal_call = True)
 
-        self.message_layout.addWidget(ChatBubble(my_input, internal_call = True))
+        self.message_layout.addWidget(chat_bubble)
 
         self.input_message.clear()
 
         self.conversation_full.verticalScrollBar().setValue(
             self.conversation_full.verticalScrollBar().maximum()
         )
+
+        self.conversation_full.ensureWidgetVisible(chat_bubble)
 
         self.chat.processEvents()
         
@@ -354,4 +380,8 @@ class Frontend():
         )
         self.light_mode.setText("☀️")
         return
+    
+    def maximize(self):
+        self.fullscreen.hide()
+        self.window.showFullScreen()
         
