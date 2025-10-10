@@ -1,9 +1,11 @@
 # Speech Memory Assistant
 ### Full-Stack LLM Chat Assistant: Modular Python Project
 
-Python based project with GUI that integrates unified abstract methods to have open-ended like conversation with different large language models - MLC-LLM | PyTorch - on Apple Silicon.
+Python based project - with modern fully self-designed dynamic pure PySide6 GUI - that integrates unified abstract methods to have open-ended like conversation with different large language models - MLC-LLM | PyTorch - on Apple Silicon.
 
 Fully modular and easily extendable. The project integrates benchmarking, memory handling, text & audio processing, speech to text and text to speech capabilities.
+
+![GUI](./Contents/sma_llm/utils/GUI.gif)
 
 ## Benchmarking: MLC-LLM vs PyTorch (with MPS) on Apple Silicon
 
@@ -36,15 +38,22 @@ mlc-llm     | 7.3667            | 0.2406              | 31.7338
 
 ## Features
 
+**Graphical User Interface:** Fully self designed,extremely fluid, always responsive, resizable:
+- Dynamically resizing input bar for smooth typing
+- Live updated & non-blocking chat output displayed in real time
+- Instantly terminate LLM inference with *enter*
+- Light/Dark theme toggle for optimal visibility
+- Clean, minimalistic and modern layout with high text contrast
+
+*Note:* The UI also handles exit signal propagation and handling.
+
 **Benchmarking:** Measures relevant parameters (Model Upload Time, Time to First Token and Throughput, RAM usage) and compare the two frameworks.
 
 **Speech to Text and Text to Speech:** The audio input file is saved onto a small RAM disk volume; keeping it on RAM ensures highest processing speed.
 
-**GUI:** User interfaces that also handle exit signal propagation and handling.
-
 **Bash scripts:** To automate execution, to process termination if RAM usage is too high & to create the RAM Disk Volume.
 
-**Specialized commands:** Export the conversation as PDF & benchmark the current running model (calculate live and display engine type, time to first token, throughput).
+**Specialized commands:** Export the conversation as PDF & benchmark the current running model (calculate on the spot and display engine type, time to first token, throughput).
 
 **Modularity:** The project follows the OOP principles being structured in many modules, each with  its designated scope.
 

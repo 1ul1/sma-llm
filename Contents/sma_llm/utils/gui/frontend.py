@@ -36,7 +36,8 @@ class Frontend():
         # Make the window appear at center
         (width, height) = Widget.QApplication.screens()[0].availableSize().toTuple()
 
-        self.window.setGeometry((width - 800) / 2, (height - 500) / 2, 800, 500)
+        self.window.move(int((width - 920) / 2), int((height - 575) / 2))
+        self.window.resize(920, 575)
         self.window.setMinimumSize(800, 500)
         self.window.setContentsMargins(0, 0, 0, 0)
         self.window.setLayout(self.layout)
@@ -86,8 +87,8 @@ class Frontend():
         # Body
         self.body = Widget.QWidget()
         self.body.setStyleSheet(
-            "background-color: rgba(0, 0, 0, 150); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;"
-            + "border: none"
+            "background-color: rgba(0, 0, 0, 150); border-bottom-left-radius: 20px;"
+            + "border: none; border-bottom-right-radius: 20px;"
         )
         self.body.setContentsMargins(0, 0, 0 , 0)
         self.body_layout = Widget.QVBoxLayout()
@@ -107,7 +108,8 @@ class Frontend():
         self.conversation = Widget.QWidget()
         self.conversation.setSizePolicy(Widget.QSizePolicy.Minimum, Widget.QSizePolicy.Minimum)
         self.conversation.setStyleSheet(
-            "background-color: transparent; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;"
+            "background-color: transparent; border-bottom-left-radius: "
+            + "20px; border-bottom-right-radius: 20px;"
         )
         self.conversation_full.setWidget(self.conversation)
         self.message_layout = Widget.QVBoxLayout()
@@ -134,10 +136,12 @@ class Frontend():
        
         # Dark Mode | Light Mode Toggle Button
         self.light_mode_toggle = False
-        self.light_mode = Widget.QPushButton("☀️")
+        self.light_mode = Widget.QPushButton("")
         self.light_mode.setFont(QFont("", INPUT_FONT))
+        self.light_mode.setFixedSize(60, 30)
         self.light_mode.setStyleSheet(
-            "background-color: transparent; border: none; padding: 0px;"
+            "background-color: white; border: 1px solid black; padding: 0px;"
+            + " border-radius: 15px"
         )
         self.light_mode.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.bottom_layout.addWidget(self.light_mode)
@@ -200,7 +204,7 @@ class Frontend():
         self.input_message.setSizePolicy(Widget.QSizePolicy.Expanding, Widget.QSizePolicy.Preferred)
         self.input_message.setStyleSheet(
             "background-color: black; color: white; border: 1px solid white;"
-            + " border-radius: 20px; padding-left: 20px; padding-right: 20px;"
+            + " border-radius: 25px; padding-left: 25px; padding-right: 25px;"
             + " padding-top: 5px; padding-bottom: 5px"
         )
         self.input_message.setFont(QFont("Monospace", INPUT_FONT))
@@ -212,7 +216,7 @@ class Frontend():
         )
         self.input_message.setFixedHeight(INPUT_BAR_SIZE)
         self.input_message.setFixedWidth(
-            self.body.width() - MESSAGES_PADDING * 2
+            self.body.width() - 2 * MESSAGES_PADDING
         )
         self.input_message.show()
 
@@ -362,10 +366,13 @@ class Frontend():
             )
             self.input_message.setStyleSheet(
                 "background-color: white; color: black; border: 1px solid black;"
-                + " border-radius: 20px; padding-left: 20px; padding-right: 20px;"
+                + " border-radius: 25px; padding-left: 25px; padding-right: 25px;"
                 + " padding-top: 5px; padding-bottom: 5px"
             )
-            self.light_mode.setText("🌑")
+            self.light_mode.setStyleSheet(
+            "background-color: black; border: 1px solid white; padding: 0px;"
+            + " border-radius: 15px"
+        )
             return
         
         self.top.setStyleSheet(
@@ -375,10 +382,13 @@ class Frontend():
         )
         self.input_message.setStyleSheet(
             "background-color: black; color: white; border: 1px solid white;"
-            + " border-radius: 20px; padding-left: 20px; padding-right: 20px;"
+            + " border-radius: 25px; padding-left: 25px; padding-right: 25px;"
             + " padding-top: 5px; padding-bottom: 5px"
         )
-        self.light_mode.setText("☀️")
+        self.light_mode.setStyleSheet(
+            "background-color: white; border: 1px solid black; padding: 0px;"
+            + " border-radius: 15px"
+        )
         return
     
     def maximize(self):

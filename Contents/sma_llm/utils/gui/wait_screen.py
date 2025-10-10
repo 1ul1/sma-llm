@@ -14,9 +14,11 @@ class WaitScreen():
         self.window.setLayout(self.layout)
         self.window.setWindowFlags(Qt.FramelessWindowHint)
         self.window.setAttribute(Qt.WA_TranslucentBackground)
+
         (width, height) = Widget.QApplication.screens()[0].availableSize().toTuple()
-        self.window.setGeometry((width - 740) / 2, (height - 470) / 2, 740, 470)
-        self.window.setFixedSize(740, 470)
+
+        self.window.move(int((width - 920) / 2), int((height - 575) / 2))
+        self.window.resize(920, 575)
 
         # Text
         self.container = Widget.QWidget()
@@ -26,7 +28,7 @@ class WaitScreen():
         self.text.setStyleSheet(
             "background-color: white; color: black;"
             + " font-size: 64px; text-align: center; font-weight: bold;"
-            + " border-radius: 10px"
+            + " border-radius: 20px"
         )
         self.text.setText("Launching   ")
 
@@ -50,8 +52,10 @@ class WaitScreen():
 
         # handle termination
         def exit_gracefully(_1 = None, _2 = None):
-            Widget.QApplication.quit()
-            exit(0)
+            def aux():
+                Widget.QApplication.quit()
+                exit(0)
+            QTimer.singleShot(100, aux)
 
         signal.signal(signal.SIGINT, exit_gracefully)
         signal.signal(signal.SIGTERM, exit_gracefully)
