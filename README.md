@@ -5,7 +5,9 @@ Python based project - with modern fully self-designed dynamic pure PySide6 GUI 
 
 Fully modular and easily extendable. The project integrates benchmarking, memory handling, text & audio processing, speech to text and text to speech capabilities.
 
-![GUI](./Contents/sma_llm/utils/GUI.gif)
+<p align="center">
+<img src="./Contents/sma_llm/utils/GUI.gif" alt="GUI gif"/>
+</p>
 
 ## Benchmarking: MLC-LLM vs PyTorch (with MPS) on Apple Silicon
 
