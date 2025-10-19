@@ -53,6 +53,10 @@ mlc-llm     | 7.3667            | 0.2406              | 31.7338
 
 **Speech to Text and Text to Speech:** The audio input file is saved onto a small RAM disk volume; keeping it on RAM ensures highest processing speed.
 
+**Text Processing:** Processes strings with RegEx to correct typos - especially capitalization errors, duplicates and unusual characters. Extremely useful for running small models, where correcting live input before feeding it back greatly reduces noise.
+
+**Parallelism and Signal Handling:** Many features run outside the main thread using Python constructs - subprocesses, multiprocessing, threading - synchronized by a global *threading.Event*. When the main thread (the UI) exits, signals are handled to allow for a graceful shutdown.
+
 **Bash scripts:** To automate execution, to process termination if RAM usage is too high & to create the RAM Disk Volume.
 
 **Specialized commands:** Export the conversation as PDF & benchmark the current running model (calculate on the spot and display engine type, time to first token, throughput).
