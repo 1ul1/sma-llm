@@ -275,9 +275,8 @@ class Frontend():
         if my_input == "" and not TOGGLE.is_set():
             self.queue = Queue()
             TOGGLE.set()
-            return
 
-        if my_input == "" or not TOGGLE.is_set():
+        if my_input == "":
             return
         
         # check if task
@@ -297,8 +296,6 @@ class Frontend():
         self.conversation_full.verticalScrollBar().setValue(
             self.conversation_full.verticalScrollBar().maximum()
         )
-
-        self.conversation_full.ensureWidgetVisible(chat_bubble)
 
         self.chat.processEvents()
         

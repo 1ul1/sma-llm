@@ -59,7 +59,7 @@ mlc-llm     | 7.3667            | 0.2406              | 31.7338
 
 **Bash scripts:** To automate execution, to process termination if RAM usage is too high & to create the RAM Disk Volume.
 
-**Specialized commands:** Export the conversation as PDF & benchmark the current running model (calculate on the spot and display engine type, time to first token, throughput).
+**Specialized commands:** Export the conversation as PDF, benchmark the current running model (calculate on the spot and display engine type, time to first token, throughput) & adjust the memory's *Sliding Window* size.
 
 **Modularity:** The project follows the OOP principles being structured in many modules, each with  its designated scope.
 
@@ -238,6 +238,8 @@ SMA-LLM
                         ChooseWhereToSave.applescript
                         exporting.py
                         benchmarking.py
+                        invalidating.py
+                        retaining.py
                 network
                     network_pytorch_hf.py
                     network_interface.py

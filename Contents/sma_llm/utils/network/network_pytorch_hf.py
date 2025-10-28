@@ -28,7 +28,7 @@ class PyTorchTransformers(Network):
     model = None # the model itself = LLM.from_pretrained("../model")
     tokenizer = None # Tokenizer.from_pretrained("../model/tokenizer")
     eos_token_id = None
-    max_position_embeddings = None
+    context_window_size = None
     mps_device = None
     instance = None
     config = None
@@ -54,7 +54,7 @@ class PyTorchTransformers(Network):
             print(f"{e}")
             return
 
-        cls.max_position_embeddings = cls.model.config.max_position_embeddings
+        cls.context_window_size = cls.model.config.context_window_size
         cls.eos_token_id = cls.model.config.eos_token_id
 
         # Metal accelerated # https://developer.apple.com/metal/pytorch/
@@ -126,8 +126,8 @@ class PyTorchTransformers(Network):
         return answer
 
     @property
-    def get_max_position_embeddings(self) -> int:
-        return self.max_position_embeddings
+    def get_context_window_size(self) -> int:
+        return self.context_window_size
 
     @property
     def get_eos_token_id(self) -> int:

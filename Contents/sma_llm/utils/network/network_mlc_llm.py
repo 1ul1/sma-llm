@@ -9,7 +9,7 @@ class MLCLLM(Network):
     model = None # the model itself
     engine = None
     config = None
-    max_position_embeddings = None # needed for receiving memory
+    context_window_size = None # needed for receiving memory
     eos_token_id = None # handle generation break
     instance = None
     text_handler = None
@@ -30,17 +30,18 @@ class MLCLLM(Network):
     def __init__(self):
         if any(var is None for var in ([
             self.config,
-            self.max_position_embeddings, 
+            self.context_window_size, 
             self.eos_token_id
         ])):
             from sma_llm.utils.network.read_model_config import model_config
             self.config = model_config(self)
             try:
-                self.max_position_embeddings = (
-                    self.config["model_config"]["rope_scaling"]["original_max_position_embeddings"]
+                self.context_window_size = (
+                    self.config["model_config"]["context_window_size"]
                 )
             except:
-                self.max_position_embeddings = 2000
+                self.context_window_size = 2000
+
             try:
                 self.eos_token_id = self.config["eos_token_id"][0]
             except:
@@ -89,8 +90,8 @@ class MLCLLM(Network):
         return answer
     
     @property
-    def get_max_position_embeddings(self) -> int:
-        self.max_position_embeddings
+    def get_context_window_size(self) -> int:
+        self.context_window_size
 
     @property
     def get_eos_token_id(self) -> int:

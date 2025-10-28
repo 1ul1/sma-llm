@@ -14,7 +14,7 @@ class Network(ABC):
 
     @property
     @abstractmethod
-    def get_max_position_embeddings(self) -> int:
+    def get_context_window_size(self) -> int:
         pass
 
     @property

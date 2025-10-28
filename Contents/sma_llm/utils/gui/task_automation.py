@@ -10,5 +10,10 @@ def check_if_task(string: str) -> None:
             export()
         case "-benchmark":
             benchmark()
+        case string if string.startswith("-retention"):
+            try:
+                retention(int(string.split("_")[-1]))
+            except:
+                invalid()
         case _:
-            return
+            invalid()

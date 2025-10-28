@@ -25,7 +25,7 @@ class Conversation:
 
     @property
     def history(self) -> str:
-        return self.memory.get_memory()
+        return self.memory.full
  
     # Recursive method instead of loop for open-ended conversation
     def converse(self) -> None:

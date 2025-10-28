@@ -21,11 +21,14 @@ class Memory:
     def __init__(self) -> None:
         self.context = self.Message("system", "You are a helpful assistant.\nConversation so far:\n")
         self.memory = [] # :list["Message"]
-        # to know who's turn it is
+        self.retention = 4 # how many messages are fed to the LLM
         self.turn = "user"
     
     def set_context(self) -> None:
         self.context.content = f'{input("Context: ")}\nConversation so far:\n'
+
+    def set_retention(self, retention: int) -> None:
+        self.retention = retention
     
     def update_memory(self, string: str) -> None:
         # create message itself (role <= from turn, content <= from the string argument)
@@ -55,11 +58,18 @@ class Memory:
     def memory_as_dict(self) -> list[dict[str, str]]:
         return (
             [self.context.message_as_dict]
-            + [message.message_as_dict for message in self.memory]
+            + [message.message_as_dict for message in self.memory[-(self.retention * 2):]]
         )
 
     @property
     def memory_as_string(self) -> str:
+        return (
+            self.context.message_as_str
+            + "\n".join(message.message_as_str for message in self.memory[-(self.retention * 2):])
+        )
+    
+    @property
+    def full(self) -> str:
         return (
             self.context.message_as_str
             + "\n".join(message.message_as_str for message in self.memory)
